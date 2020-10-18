@@ -1,6 +1,14 @@
 import './app3.scss'
 import $ from 'jquery'
 
+const html = `
+<section id="app3" class="block">
+  <div class="square"></div>
+</section>
+`
+
+$(html).appendTo($('body > .content'))
+
 const localKey = 'mvc.squareActive'
 const squareActive = localStorage.getItem(localKey) === 'yes'
 
