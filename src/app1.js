@@ -1,10 +1,19 @@
 import './app1.scss'
 import $ from 'jquery'
 
+const eventBus = $(window)
+
 const model = {
   data: {
     number: parseInt(localStorage.getItem('mvc.computedReault') || 0)
-  }
+  },
+  created() {},
+  delete() {},
+  updata(data) {
+    Object.assign(model.data, data)
+    eventBus.trigger('model:updated')
+  },
+  get() {}
 }
 
 const view = {
@@ -38,6 +47,9 @@ const controller = {
     view.init(container)
     view.render(model.data)
     controller.autoBindEvents()
+    eventBus.on('model:updated', () => {
+      view.render(model.data)
+    })
   },
   events: {
     'click #add': 'add',
@@ -47,6 +59,21 @@ const controller = {
     'click #clear': 'clear'
   },
   add() {
+    model.updata({number: model.data.number + 2})
+  },
+  minus() {
+    model.updata({number: model.data.number - 2})
+  },
+  multiply() {
+    model.updata({number: model.data.number * 2})
+  },
+  divide() {
+    model.updata({number: model.data.number / 2})
+  },
+  clear() {
+    model.updata({number: 0})
+  },
+/*   add() {
     model.data.number += 2
     view.render(model.data)
   },
@@ -65,7 +92,7 @@ const controller = {
   clear() {
     model.data.number = 0
     view.render(model.data)
-  },
+  }, */
   autoBindEvents(){
     const events = controller.events
     for (const key in events) {
