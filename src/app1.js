@@ -15,7 +15,7 @@ const view = {
     <div class="operating">
       <button id="add">+2</button>
       <button id="minus">-2</button>
-      <button id="mcl">×2</button>
+      <button id="multiply">×2</button>
       <button id="divide">÷2</button>
       <button id="clear">清空</button>
     </div>
@@ -24,23 +24,60 @@ const view = {
   init(container) {
     /* container：指定渲染的容器 */
     view.element = $(container)
-    view.render()
   },
-  render() {
+  render(data) {
     /* 判断 element 内是否存在元素，存在则清空 */
     if (view.element.children.length !== 0) { view.element.empty() }
-    $(view.html.replace('{{number}}', model.data.number))
+    $(view.html.replace('{{number}}', data.number))
       .appendTo(view.element)
   }
-} 
+}
 
 const controller = {
   init(container) {
     view.init(container)
-    controller.bindEvents()
+    view.render(model.data)
+    controller.autoBindEvents()
   },
+  events: {
+    'click #add': 'add',
+    'click #minus': 'minus',
+    'click #multiply': 'multiply',
+    'click #divide': 'divide',
+    'click #clear': 'clear'
+  },
+  add() {
+    model.data.number += 2
+    view.render(model.data)
+  },
+  minus() {
+    model.data.number -= 2
+    view.render(model.data)
+  },
+  multiply() {
+    model.data.number *= 2
+    view.render(model.data)
+  },
+  divide() {
+    model.data.number /= 2
+    view.render(model.data)
+  },
+  clear() {
+    model.data.number = 0
+    view.render(model.data)
+  },
+  autoBindEvents(){
+    const events = controller.events
+    for (const key in events) {
+      const value = controller[events[key]]
+      const spaceIndex = key.indexOf(' ')
+      const part1 = key.slice(0, spaceIndex)
+      const part2 = key.slice(spaceIndex + 1)
+      view.element.on(part1, part2, value)
+    }
+  }
   /* 绑定事件 */
-  bindEvents() {
+  /* bindEvents() {
     view.element.on('click', '#add', () => {
       model.data.number += 2
       view.render()
@@ -49,7 +86,7 @@ const controller = {
       model.data.number -= 2
       view.render()
     })
-    view.element.on('click', '#mcl', () => {
+    view.element.on('click', '#multiply', () => {
       model.data.number *= 2
       view.render()
     })
@@ -61,7 +98,7 @@ const controller = {
       model.data.number = 0
       view.render()
     })
-  }
+  } */
 }
 
 export default controller
